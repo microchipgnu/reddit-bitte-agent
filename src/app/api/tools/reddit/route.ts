@@ -29,12 +29,12 @@ interface RedditResponse {
 
 export async function GET() {
 	try {
-		const response = await axios.get('https://api.reddit.com/.json', {
+		const response = await axios.get('https://www.reddit.com/.json', {
 			headers: {
 				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+				'Accept': 'application/json',
 				'Accept-Language': 'en-US,en;q=0.5',
-				'Cache-Control': 'max-age=60'
+				'Cache-Control': 'max-age=0'
 			}
 		});
 		const data: RedditResponse = response.data;
@@ -52,6 +52,9 @@ export async function GET() {
 		return NextResponse.json({ posts });
 	} catch (error) {
 		console.error('Error fetching Reddit frontpage:', error);
+		if (axios.isAxiosError(error) && error.response?.status === 403) {
+			return NextResponse.json({ error: 'Access to Reddit API is blocked. Please try again later.' }, { status: 403 });
+		}
 		return NextResponse.json({ error: 'Failed to fetch Reddit frontpage' }, { status: 500 });
 	}
 }
