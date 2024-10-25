@@ -6,6 +6,8 @@ interface RedditPost {
 	url: string;
 	subreddit: string;
 	score: number;
+	author: string;
+	num_comments: number;
 }
 
 interface RedditChild {
@@ -14,6 +16,8 @@ interface RedditChild {
 		url: string;
 		subreddit: string;
 		score: number;
+		author: string;
+		num_comments: number;
 	};
 }
 
@@ -25,17 +29,10 @@ interface RedditResponse {
 
 export async function GET() {
 	try {
-		const response = await axios.get('https://www.reddit.com/.json', {
+		const response = await axios.get('https://oauth.reddit.com/hot', {
 			headers: {
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-				'Accept-Language': 'en-US,en;q=0.9',
-				'Accept-Encoding': 'gzip, deflate, br',
-				'Connection': 'keep-alive',
-				'Upgrade-Insecure-Requests': '1',
-				'DNT': '1',
-				'Cache-Control': 'no-cache',
-				'Pragma': 'no-cache',
+				'Authorization': `Bearer ${process.env.REDDIT_ACCESS_TOKEN}`,
+				'User-Agent': 'MyApp/1.0.0'
 			}
 		});
 		const data: RedditResponse = response.data;
@@ -46,11 +43,13 @@ export async function GET() {
 			url: child.data.url,
 			subreddit: child.data.subreddit,
 			score: child.data.score,
+			author: child.data.author,
+			num_comments: child.data.num_comments
 		}));
 
 		return NextResponse.json({ posts });
 	} catch (error) {
-		console.error('Error fetching Reddit front page JSON:', error);
+		console.error('Error fetching Reddit front page:', error);
 		return NextResponse.json({ error: 'Failed to fetch Reddit frontpage' }, { status: 500 });
 	}
 }
