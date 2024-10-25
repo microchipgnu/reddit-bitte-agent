@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     }
 
     try {
-        const response = await axios.get(`https://www.reddit.com/user/${username}/about.json`);
+        const response = await axios.get(`https://api.reddit.com/user/${username}/about.json`);
         const userData = response.data.data;
 
         const userProfile = {

@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     }
 
     try {
-        const response = await fetch(`https://www.reddit.com/r/${subreddit}/new.json?limit=25`);
+        const response = await fetch(`https://api.reddit.com/r/${subreddit}/new.json?limit=25`);
         if (!response.ok) {
             throw new Error(`Failed to fetch posts from r/${subreddit}`);
         }

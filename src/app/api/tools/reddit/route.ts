@@ -28,7 +28,7 @@ interface RedditResponse {
 
 export async function GET() {
 	try {
-		const response = await fetch('https://www.reddit.com/.json');
+		const response = await fetch('https://api.reddit.com/.json');
 		if (!response.ok) {
 			throw new Error('Failed to fetch Reddit frontpage');
 		}
